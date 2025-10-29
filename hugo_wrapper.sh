@@ -319,7 +319,7 @@ handle_new() {
 
     echo "Creating new $type: $file_rel_path"
     # Run hugo new from the project path context
-    if ! hugo new "$file_rel_path" --cwd "$PROJECT_PATH"; then
+    if ! hugo new "$file_rel_path" --source "$PROJECT_PATH"; then
         echo "Error: Hugo failed to create the $type." >&2
         exit 1
     fi
@@ -473,7 +473,7 @@ handle_edit() {
         echo "Attempting to edit by ID(s): ${ids[*]}"
         for id in "${ids[@]}"; do
             local file_path
-            file_path=$(_find_file_by_id "$id") to be set
+            file_path=$(_find_file_by_id "$id")
             if [[ -z "$file_path" ]]; then
                 echo "Warning: No content found with ID $id. Skipping." >&2
             elif [[ ! -f "$file_path" ]]; then
@@ -682,7 +682,8 @@ handle_deploy() {
         exit 1
     fi
 
-    local RSYNC_OPTS=(-avz --delete --checksum --human-readable --progress)
+    local RSYNC_OPTS=(-avz --delete --checksum)
+    # local RSYNC_OPTS=(-avz --delete --checksum --human-readable --progress)
     if [ "$DRY_RUN" = true ]; then
         RSYNC_OPTS+=(--dry-run)
         echo "--- DRY RUN MODE ---"
